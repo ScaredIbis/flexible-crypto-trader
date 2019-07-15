@@ -17,7 +17,7 @@ async function dca() {
 
 			const amountToBuy = round(audToSpend / bestAsk, 8);
 
-			// await client.createOrder(tickerSymbol, 'AUD', null, amountToBuy * BTCMarkets.numberConverter, 'Bid', 'Market', null);
+			await client.createOrder(tickerSymbol, 'AUD', null, amountToBuy * BTCMarkets.numberConverter, 'Bid', 'Market', null);
 			console.log(`DCA Purchase: ${amountToBuy} ${tickerSymbol} @ $${bestAsk} per coin ($${audToSpend})`);
 		} catch (e) {
 			console.log(`Failed to make DCA Purchase for $${audToSpend} of ${tickerSymbol}: ${e.message}`);
