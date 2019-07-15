@@ -11,11 +11,11 @@ const client = new BTCMarkets(
 );
 
 async function buy() {
-	const coin = process.env.COIN;
+	const coin = process.env.COIN.toUpperCase();
 	const tableName = process.env.DB_TABLE_NAME;
 
 	const amountToSpendAUD = Number(process.env.AUD_PURCHASE_AMOUNT);
-	const maxSpendAUD = Number(process.env.MAX_SPEND);
+	const maxAudInOpenTrades = Number(process.env.MAX_AUD_IN_OPEN_TRADES);
 	const minAudInOpenTrades = Number(process.env.MIN_AUD_IN_OPEN_TRADES);
 	const maxMinsBetweenTrades = Number(process.env.MAX_MINUTES_BETWEEN_TRADES);
 
@@ -44,8 +44,8 @@ async function buy() {
 			return total+item.amountSpentAUD;
 		}, 0);
 
-		if(amountSpentAUDInOpenTrades + amountToSpendAUD > maxSpendAUD) {
-			let result = `Already hit max spend (${maxSpendAUD}), skipping buy process`;
+		if(amountSpentAUDInOpenTrades + amountToSpendAUD > maxAudInOpenTrades) {
+			let result = `Already hit max aud in open trades (${maxAudInOpenTrades}), skipping buy process`;
 			console.log('BUY RESULT: ', result);
 			return result;
 		}
@@ -78,8 +78,8 @@ async function buy() {
 	}
 
 
-	if(amountToSpendAUD > maxSpendAUD) {
-		let result = `Amount to spend (${amountToSpendAUD}) is higher than max allowed spend ${maxSpendAUD}, skipping buy`;
+	if(amountToSpendAUD > maxAudInOpenTrades) {
+		let result = `Amount to spend (${amountToSpendAUD}) is higher than max allowed spend ${maxAudInOpenTrades}, skipping buy`;
 		console.log('BUY RESULT: ', result);
 		return result;
 	}

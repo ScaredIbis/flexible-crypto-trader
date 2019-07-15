@@ -1,0 +1,54 @@
+default: &default
+  <<: *default
+  # these are applied to every stage
+  # they will be overwritten if they are redefined under the stage name
+
+  EXCHANGE: btcmarkets # use strategies in the btcmarkets folder
+  STRATEGY: chunk # use handlers in the chunk folder
+  BTC_MARKETS_KEY: <btcmarkets_api_key>
+  BTC_MARKETS_SECRET: <btcmarkets_api_secret>
+  DB_TABLE_NAME: 'FCT_DEFAULT' # dynamodb table name where trade activity is stored
+  COIN: BTC # trade bitcoin
+  LIVE: false # only log simulated activity to dynamodb, dont actually place trades
+  BUY_CRON_SCHEDULE: '0/30 * ? * * *' # check if we should buy every 30 minutes
+  SELL_CRON_SCHEDULE: '0/5 * * * ? *' # check if we should sell every 5 minutes
+  DCA_CRON_SCHEDULE: '0 9 ? * 7 *' # run dollar cost average every saturday at 9am utc
+  ENABLE_DCA: false # dont activate dca cron schedule (lambda will never run automatically)
+  ENABLE_BUY: true # activate buying
+  ENABLE_SELL: false # activate selling
+  AUD_PURCHASE_AMOUNT: 50 # buy $50 at a time during buy process
+  MAX_AUD_IN_OPEN_TRADES: 500 # dont place any buy orders that would cause more than $500 to be in play
+  MIN_AUD_IN_OPEN_TRADES: 200 # place buy order on every buy check until $200 is in play
+  MAX_MINUTES_BETWEEN_TRADES: 360 # once MIN_AUD_IN_OPEN_TRADES is satisfied, only buy every 6 hours
+  MIN_PERCENTAGE_GAIN: 10 # only place sell orders when price has gone up by 10% or more
+  MODE: TRADE # keep profits in AUD
+  TABLE_THROUGHPUT: 5 # provision 5 units of read and write capacity for our table
+  DCA_PURCHASE_MAP: '{"btc": 40, "eth": 35}' # amount of each coin to buy during DCA
+
+btcmarkets-chunk-btc:
+  <<: *default # mostly uses default values
+  DB_TABLE_NAME: 'FCT_BTC_MARKETS_CHUNK_BTC' # name it whatever
+  LIVE: true # place real orders
+  AUD_PURCHASE_AMOUNT: 100 # buy 100 at a time
+  MAX_AUD_IN_OPEN_TRADES: 600
+  MIN_AUD_IN_OPEN_TRADES: 300
+  ENABLE_DCA: true # enable dca function on this stage
+  MODE: ACCUMULATE # sell enough AUD to break even and keep leftover btc
+
+coinspot-chunk-eth:
+  <<: *default # use values defined in default stage unless specified here
+  EXCHANGE: coinspot # use strategies in the coinspot folder
+  COINSPOT__KEY: <coinspot_api_key>
+  COINSPOT_SECRET: <coinspot_api_secret>
+  DB_TABLE_NAME: 'COINSPOT_CHUNK_TRADER_ETH' # call it whatever you want
+  COIN: ETH # trade ethereum
+  LIVE: true # place real orders
+  AUD_PURCHASE_AMOUNT: 200 # buy $200 at a time
+  MIN_PERCENTAGE_GAIN: 7 # sell on 7% price increase
+  MAX_AUD_IN_OPEN_TRADES: 5000 # dont place any buy orders that would cause more than $5000 to be in play
+  BUY_CRON_SCHEDULE: '0/10 * ? * * *' # check for buys every 10 minutes
+  SELL_CRON_SCHEDULE: '0/5 * * * ? *' # check for sells every 5 minutes
+  MIN_AUD_IN_OPEN_TRADES: 2000 # place buy order on every buy check until $200 is in play
+  MAX_MINUTES_BETWEEN_TRADES: 600 # $2000 is in play, only buy every 10 hours
+  ENABLE_DCA: true # activate dollar cost averaging
+  MODE: ACCUMULATE # sell enough AUD to break even and keep leftover ether

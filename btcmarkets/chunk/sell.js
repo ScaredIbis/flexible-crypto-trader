@@ -9,7 +9,7 @@ const client = new BTCMarkets(
 );
 
 async function sell() {
-	const coin = process.env.COIN;
+	const coin = process.env.COIN.toUpperCase();
 	const minPercentageGain = Number(process.env.MIN_PERCENTAGE_GAIN);
 	const tableName = process.env.DB_TABLE_NAME;
 
