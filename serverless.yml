@@ -27,7 +27,7 @@ provider:
     COIN: ${self:custom.env.COIN}
     AUD_PURCHASE_AMOUNT: ${self:custom.env.AUD_PURCHASE_AMOUNT}
     MIN_PERCENTAGE_GAIN: ${self:custom.env.MIN_PERCENTAGE_GAIN}
-    MAX_SPEND: ${self:custom.env.MAX_SPEND}
+    MIN_AUD_IN_OPEN_TRADES: ${self:custom.env.MIN_AUD_IN_OPEN_TRADES}
     LIVE: ${self:custom.env.LIVE}
     DB_TABLE_NAME: ${self:custom.env.DB_TABLE_NAME}
     MIN_AUD_IN_OPEN_TRADES: ${self:custom.env.MIN_AUD_IN_OPEN_TRADES}
