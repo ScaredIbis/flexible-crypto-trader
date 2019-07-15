@@ -91,3 +91,5 @@ This is a [known issue](https://github.com/serverless/serverless/issues/5111).
 Running serverless package will build the cloudformation template without deploying to aws.
 You can verify that the http event(s) have status 'DISABLED' in the output of this command.
 
+## License
+This project is [MIT licensed](https://github.com/scaredibis/flexible-crypto-trader/blob/master/LICENSE)
