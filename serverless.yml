@@ -26,6 +26,7 @@ provider:
   name: aws
   runtime: nodejs10.x
   stage: default
+  region: ap-southeast-2
   environment:
     BTC_MARKETS_KEY: ${self:custom.env.BTC_MARKETS_KEY}
     BTC_MARKETS_SECRET: ${self:custom.env.BTC_MARKETS_SECRET}
@@ -39,6 +40,8 @@ provider:
     MAX_MINUTES_BETWEEN_TRADES: ${self:custom.env.MAX_MINUTES_BETWEEN_TRADES}
     DCA_PURCHASE_MAP: ${self:custom.env.DCA_PURCHASE_MAP}
     MODE: ${self:custom.env.MODE}
+    EXCHANGE: ${self:custom.env.EXCHANGE}
+    STRATEGY: ${self:custom.env.STRATEGY}
 
   iamRoleStatements:
     - Effect: "Allow"
@@ -100,6 +103,7 @@ functions:
     events:
       - schedule:
           rate: cron(${self:custom.env.BUY_CRON_SCHEDULE})
+          enabled: ${self:custom.env.ENABLE_BUY}
   sell:
     handler: handler.sell
     memorySize: 256
@@ -107,6 +111,7 @@ functions:
     events:
       - schedule:
           rate: cron(${self:custom.env.SELL_CRON_SCHEDULE})
+          enabled: ${self:custom.env.ENABLE_SELL}
   dca:
     handler: handler.dca
     events:

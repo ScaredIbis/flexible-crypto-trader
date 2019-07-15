@@ -1,8 +1,20 @@
-'use strict';
+const { EXCHANGE, STRATEGY } = process.env;
 
-const buy = require('./buy');
-const sell = require('./sell');
-const dca = require('./dca');
+if(!EXCHANGE) {
+	throw new Error('"EXCHANGE" env variable is required');
+}
+
+if(!STRATEGY) {
+	throw new Error('"STRATEGY" env variable is required');
+}
+
+const buyHandlerPath = `./${EXCHANGE}/${STRATEGY}/buy`;
+const sellHandlerPath = `./${EXCHANGE}/${STRATEGY}/sell`;
+const dcaHandlerPath = `./${EXCHANGE}/dca`;
+
+const buy = require(buyHandlerPath);
+const sell = require(sellHandlerPath);
+const dca = require(dcaHandlerPath);
 
 module.exports.buy = async () => {
 	try {
