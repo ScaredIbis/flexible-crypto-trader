@@ -12,15 +12,16 @@ async function dca() {
 
 	for (const tickerSymbol in dcaPurchaseMap) {
 		const audToSpend = dcaPurchaseMap[tickerSymbol];
+		const symbol = tickerSymbol.toUpperCase();
 		try {
-			const { bestAsk } = await client.getTick(tickerSymbol.toUpperCase(), 'AUD');
+			const { bestAsk } = await client.getTick(symbol, 'AUD');
 
 			const amountToBuy = round(audToSpend / bestAsk, 8);
 
-			await client.createOrder(tickerSymbol, 'AUD', null, amountToBuy * BTCMarkets.numberConverter, 'Bid', 'Market', null);
-			console.log(`DCA Purchase: ${amountToBuy} ${tickerSymbol} @ $${bestAsk} per coin ($${audToSpend})`);
+			await client.createOrder(symbol, 'AUD', null, amountToBuy * BTCMarkets.numberConverter, 'Bid', 'Market', null);
+			console.log(`DCA Purchase: ${amountToBuy} ${symbol} @ $${bestAsk} per coin ($${audToSpend})`);
 		} catch (e) {
-			console.log(`Failed to make DCA Purchase for $${audToSpend} of ${tickerSymbol}: ${e.message}`);
+			console.log(`Failed to make DCA Purchase for $${audToSpend} of ${symbol}: ${e.message}`);
 		}
 	}
 
