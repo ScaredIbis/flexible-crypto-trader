@@ -75,7 +75,7 @@ The existing environment variable names are tailored for the included chunk trad
 | MODE                       | 'TRADE' to sell for AUD profits, 'ACCUMULATE' to break even on AUD and keep leftover coins|
 | DB_TABLE_NAME              | DynamoDB table name, this table will be created during deployment                         |
 | TABLE_THROUGHPUT           | DynamoDB table read and write throughput, set to 5 for a safe bet                         |
-| DCA_PURCHASE_MAP           | JSON string of symbols and amounts to purchase during dca process                         |
+| JSON_DATA                  | JSON string of any arbitrary data you want                                                |
 
 ## Example environments
 
