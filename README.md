@@ -13,7 +13,7 @@ You should have already set up an account with your chosen crypto exchange and g
 ### Deploying
 Use the serverless deploy command to deploy your configuration. The application will be deployed to ap-southeast-2 under your [default] aws profile by default. You can overwrite these through cli arguments.
 
-eg. npx serverless deploy --stage btcmarkets-chunk-btc --region us-west-1 --profile some-other-profile
+eg. npx serverless deploy --stage btcmarkets-chunk-btc --region us-west-1 --aws-profile some-other-profile
 
 ### Adding exchanges and strategies
 You can add support for additional exchanges and strategies by adhering to the folder structure for the serverless handler methods.
