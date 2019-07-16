@@ -73,6 +73,7 @@ The existing environment variable names are tailored for the included chunk trad
 | ENABLE_SELL                | if set to true, will enable the cron schedule for the sell function                       |
 | MODE                       | 'TRADE' to sell for AUD profits, 'ACCUMULATE' to break even on AUD and keep leftover coins|
 | DB_TABLE_NAME              | DynamoDB table name, this table will be created during deployment                         |
+| TABLE_REQUIRED             | If false, will skip dynamodb table creation. Should be 'true' in most cases               |
 | TABLE_THROUGHPUT           | DynamoDB table read and write throughput, set to 5 for a safe bet                         |
 | JSON_DATA                  | JSON string of any arbitrary data you want                                                |
 
