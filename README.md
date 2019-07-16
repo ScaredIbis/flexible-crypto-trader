@@ -25,10 +25,9 @@ You can add support for additional exchanges and strategies by adhering to the f
 │   ├── <strategy>
 │   │   ├── buy.js
 │   │   ├── sell.js
-│   ├── dca.js
 
 ```
-A 'chunk' strategy is implemented for the Australian exchange [btcmarkets](https://btcmarkets.net/). The folder structure is as follows:
+'chunk' and 'dca' strategies are implemented for the Australian exchange [btcmarkets](https://btcmarkets.net/). The folder structure is as follows:
 
 ```
 ├── handler.js
@@ -37,8 +36,10 @@ A 'chunk' strategy is implemented for the Australian exchange [btcmarkets](https
 │   ├── chunk
 │   │   ├── buy.js
 │   │   ├── sell.js
-│   ├── dca.js
+│   ├── dca
+│   │   ├── buy.js
 ```
+Note that the dollar cost average strategy doesn't have a sell function, this is paired with the env variable 'ENABLE_SELL' having the value 'false'
 
 The buy and sell functions live inside the \<strategy> folder, they receive no arguments and as such should rely on environment variables for 'parameters'.
 
@@ -68,14 +69,13 @@ The existing environment variable names are tailored for the included chunk trad
 | MAX_MINUTES_BETWEEN_TRADES | Number of minutes to wait between buy orders when MIN_AUD_IN_OPEN_TRADES is satisfied     |
 | BUY_CRON_SCHEDULE          | CRON schedule for running the buy function                                                |
 | SELL_CRON_SCHEDULE         | CRON schedule for running the sell function                                               |
-| DCA_CRON_SCHEDULE          | CRON schedule for running the dca function                                                |
 | ENABLE_BUY                 | if set to true, will enable the cron schedule for the buy function                        |
 | ENABLE_SELL                | if set to true, will enable the cron schedule for the sell function                       |
-| ENABLE_DCA                 | if set to true, will enable the cron schedule for the dca function                        |
 | MODE                       | 'TRADE' to sell for AUD profits, 'ACCUMULATE' to break even on AUD and keep leftover coins|
 | DB_TABLE_NAME              | DynamoDB table name, this table will be created during deployment                         |
+| TABLE_REQUIRED             | If false, will skip dynamodb table creation. Should be 'true' in most cases               |
 | TABLE_THROUGHPUT           | DynamoDB table read and write throughput, set to 5 for a safe bet                         |
-| DCA_PURCHASE_MAP           | JSON string of symbols and amounts to purchase during dca process                         |
+| JSON_DATA                  | JSON string of any arbitrary data you want                                                |
 
 ## Example environments
 

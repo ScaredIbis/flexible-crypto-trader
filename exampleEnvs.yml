@@ -23,7 +23,6 @@ default: &default
   MIN_PERCENTAGE_GAIN: 10 # only place sell orders when price has gone up by 10% or more
   MODE: TRADE # keep profits in AUD
   TABLE_THROUGHPUT: 5 # provision 5 units of read and write capacity for our table
-  DCA_PURCHASE_MAP: '{"btc": 40, "eth": 35}' # amount of each coin to buy during DCA
 
 btcmarkets-chunk-btc:
   <<: *default # mostly uses default values
@@ -52,3 +51,13 @@ coinspot-chunk-eth:
   MAX_MINUTES_BETWEEN_TRADES: 600 # $2000 is in play, only buy every 10 hours
   ENABLE_DCA: true # activate dollar cost averaging
   MODE: ACCUMULATE # sell enough AUD to break even and keep leftover ether
+
+btcmarkets-dca: # deploy a dca strategy for dollar cost averaging
+  <<: *default
+  EXCHANGE: btcmarkets
+  STRATEGY: dca
+  LIVE: true
+  JSON_DATA: '{"btc": 40, "eth": 35}' # arbitrary data, used to determine how much of each asset to dca
+  BUY_CRON_SCHEDULE: '0 9 ? * 7 *' #every saturday at 9am utc
+  ENABLE_SELL: false # doesn't run sell process as it just buys a small amount regularly
+  TABLE_REQUIRED: false # this will cause the deploy process to skip dynamodb table creation

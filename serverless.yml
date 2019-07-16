@@ -32,10 +32,12 @@ provider:
     DB_TABLE_NAME: ${self:custom.env.DB_TABLE_NAME}
     MIN_AUD_IN_OPEN_TRADES: ${self:custom.env.MIN_AUD_IN_OPEN_TRADES}
     MAX_MINUTES_BETWEEN_TRADES: ${self:custom.env.MAX_MINUTES_BETWEEN_TRADES}
-    DCA_PURCHASE_MAP: ${self:custom.env.DCA_PURCHASE_MAP}
+    JSON_DATA: ${self:custom.env.JSON_DATA}
     MODE: ${self:custom.env.MODE}
     EXCHANGE: ${self:custom.env.EXCHANGE}
     STRATEGY: ${self:custom.env.STRATEGY}
+    ENABLE_BUY: ${self:custom.env.ENABLE_BUY}
+    ENABLE_SELL: ${self:custom.env.ENABLE_SELL}
 
   iamRoleStatements:
     - Effect: "Allow"
@@ -47,7 +49,7 @@ provider:
         - "dynamodb:Query"
         - "dynamodb:DescribeTable"
       Resource:
-        - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.env.DB_TABLE_NAME}"
+        - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.env.DB_TABLE_NAME, FCT_FALLBACK_TABLE_NAME}"
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -75,17 +77,18 @@ functions:
       - schedule:
           rate: cron(${self:custom.env.SELL_CRON_SCHEDULE})
           enabled: ${self:custom.env.ENABLE_SELL}
-  dca:
-    handler: handler.dca
-    events:
-      - schedule:
-          rate: cron(${self:custom.env.DCA_CRON_SCHEDULE})
-          enabled: ${self:custom.env.ENABLE_DCA}
 
 # you can add CloudFormation resource templates here
 resources:
+  Conditions:
+    TableRequired:
+      Fn::Equals:
+        - ${self:custom.env.TABLE_REQUIRED}
+        - true
+
   Resources:
     TradesTable:
+      Condition: TableRequired
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.env.DB_TABLE_NAME}
