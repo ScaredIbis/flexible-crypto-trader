@@ -23,7 +23,6 @@ default: &default
   MIN_PERCENTAGE_GAIN: 10 # only place sell orders when price has gone up by 10% or more
   MODE: TRADE # keep profits in AUD
   TABLE_THROUGHPUT: 5 # provision 5 units of read and write capacity for our table
-  DCA_PURCHASE_MAP: '{"btc": 40, "eth": 35}' # amount of each coin to buy during DCA
 
 btcmarkets-chunk-btc:
   <<: *default # mostly uses default values
