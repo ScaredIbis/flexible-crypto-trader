@@ -29,7 +29,7 @@ The chunk strategy runs parallel trading chunks that are bought and sold indepen
         - Amount to sell is simply the amount purchased, `AUD` gain is kept as profit
     - If running in live mode (`LIVE` is set to 'true')
         - Place market order to sell the determined amount of `COIN`
-    - Mark chunk and sold and store sale details in DynamoDB
+    - Mark chunk as sold and store sale details in DynamoDB
 
 
 
