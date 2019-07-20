@@ -22,22 +22,22 @@ provider:
   stage: default
   region: ap-southeast-2
   environment:
-    BTC_MARKETS_KEY: ${self:custom.env.BTC_MARKETS_KEY}
-    BTC_MARKETS_SECRET: ${self:custom.env.BTC_MARKETS_SECRET}
-    COIN: ${self:custom.env.COIN}
-    AUD_PURCHASE_AMOUNT: ${self:custom.env.AUD_PURCHASE_AMOUNT}
-    MIN_PERCENTAGE_GAIN: ${self:custom.env.MIN_PERCENTAGE_GAIN}
-    MAX_AUD_IN_OPEN_TRADES: ${self:custom.env.MAX_AUD_IN_OPEN_TRADES}
-    LIVE: ${self:custom.env.LIVE}
-    DB_TABLE_NAME: ${self:custom.env.DB_TABLE_NAME}
-    MIN_AUD_IN_OPEN_TRADES: ${self:custom.env.MIN_AUD_IN_OPEN_TRADES}
-    MAX_MINUTES_BETWEEN_TRADES: ${self:custom.env.MAX_MINUTES_BETWEEN_TRADES}
+    BTC_MARKETS_KEY: ${self:custom.env.BTC_MARKETS_KEY, 'btcmarkets_key'}
+    BTC_MARKETS_SECRET: ${self:custom.env.BTC_MARKETS_SECRET, 'btcmarkets_secret'}
+    COIN: ${self:custom.env.COIN, 'BTC'}
+    AUD_PURCHASE_AMOUNT: ${self:custom.env.AUD_PURCHASE_AMOUNT, '20'}
+    MIN_PERCENTAGE_GAIN: ${self:custom.env.MIN_PERCENTAGE_GAIN, '8'}
+    MAX_AUD_IN_OPEN_TRADES: ${self:custom.env.MAX_AUD_IN_OPEN_TRADES, '100'}
+    LIVE: ${self:custom.env.LIVE, 'false'}
+    DB_TABLE_NAME: ${self:custom.env.DB_TABLE_NAME, 'FCT_DEFAULT_TABLE_NAME'}
+    MIN_AUD_IN_OPEN_TRADES: ${self:custom.env.MIN_AUD_IN_OPEN_TRADES, '60'}
+    MAX_MINUTES_BETWEEN_TRADES: ${self:custom.env.MAX_MINUTES_BETWEEN_TRADES, '360'}
     JSON_DATA: ${self:custom.env.JSON_DATA}
-    MODE: ${self:custom.env.MODE}
-    EXCHANGE: ${self:custom.env.EXCHANGE}
-    STRATEGY: ${self:custom.env.STRATEGY}
-    ENABLE_BUY: ${self:custom.env.ENABLE_BUY}
-    ENABLE_SELL: ${self:custom.env.ENABLE_SELL}
+    MODE: ${self:custom.env.MODE, 'ACCUMULATE'}
+    EXCHANGE: ${self:custom.env.EXCHANGE, 'btcmarkets'}
+    STRATEGY: ${self:custom.env.STRATEGY, 'chunk'}
+    ENABLE_BUY: ${self:custom.env.ENABLE_BUY, 'true'}
+    ENABLE_SELL: ${self:custom.env.ENABLE_SELL, 'true'}
 
   iamRoleStatements:
     - Effect: "Allow"
@@ -49,7 +49,7 @@ provider:
         - "dynamodb:Query"
         - "dynamodb:DescribeTable"
       Resource:
-        - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.env.DB_TABLE_NAME, FCT_FALLBACK_TABLE_NAME}"
+        - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.env.DB_TABLE_NAME, 'FCT_DEFAULT_TABLE_NAME'}"
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -68,7 +68,7 @@ functions:
     events:
       - schedule:
           rate: cron(${self:custom.env.BUY_CRON_SCHEDULE})
-          enabled: ${self:custom.env.ENABLE_BUY}
+          enabled: ${self:custom.env.ENABLE_BUY, 'true'}
   sell:
     handler: handler.sell
     memorySize: 256
@@ -76,14 +76,14 @@ functions:
     events:
       - schedule:
           rate: cron(${self:custom.env.SELL_CRON_SCHEDULE})
-          enabled: ${self:custom.env.ENABLE_SELL}
+          enabled: ${self:custom.env.ENABLE_SELL, 'true'}
 
 # you can add CloudFormation resource templates here
 resources:
   Conditions:
     TableRequired:
       Fn::Equals:
-        - ${self:custom.env.TABLE_REQUIRED}
+        - ${self:custom.env.TABLE_REQUIRED, 'true'}
         - true
 
   Resources:
@@ -91,7 +91,7 @@ resources:
       Condition: TableRequired
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.env.DB_TABLE_NAME}
+        TableName: ${self:custom.env.DB_TABLE_NAME, 'FCT_DEFAULT_TABLE_NAME'}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -100,5 +100,5 @@ resources:
             KeyType: HASH
         # Set the capacity based on the stage
         ProvisionedThroughput:
-          ReadCapacityUnits: ${self:custom.env.TABLE_THROUGHPUT}
-          WriteCapacityUnits: ${self:custom.env.TABLE_THROUGHPUT}
+          ReadCapacityUnits: ${self:custom.env.TABLE_THROUGHPUT, '5'}
+          WriteCapacityUnits: ${self:custom.env.TABLE_THROUGHPUT, '5'}
