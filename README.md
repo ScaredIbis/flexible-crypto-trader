@@ -13,7 +13,7 @@ You should have already set up an account with your chosen crypto exchange and g
 ### Deploying
 Use the serverless deploy command to deploy your configuration. The application will be deployed to ap-southeast-2 under your [default] aws profile by default. You can overwrite these through cli arguments.
 
-eg. npx serverless deploy --stage btcmarkets-chunk-btc --region us-west-1 --aws-profile some-other-profile
+`npx serverless deploy --stage btcmarkets-chunk-btc --region us-west-1 --aws-profile some-other-profile`
 
 ### Adding exchanges and strategies
 You can add support for additional exchanges and strategies by adhering to the folder structure for the serverless handler methods.
@@ -23,8 +23,9 @@ You can add support for additional exchanges and strategies by adhering to the f
 ├── serverless.yml
 ├── <exchange>
 │   ├── <strategy>
-│   │   ├── buy.js
-│   │   ├── sell.js
+│   │   ├── buy.js // function to run during buy process
+│   │   ├── sell.js // function to run during sell process
+│   │   ├── STRATEGY.md // explanation of strategy
 
 ```
 'chunk' and 'dca' strategies are implemented for the Australian exchange [btcmarkets](https://btcmarkets.net/). The folder structure is as follows:
@@ -36,12 +37,19 @@ You can add support for additional exchanges and strategies by adhering to the f
 │   ├── chunk
 │   │   ├── buy.js
 │   │   ├── sell.js
+│   │   ├── STRATEGY.md
 │   ├── dca
 │   │   ├── buy.js
+│   │   ├── STRATEGY.md
 ```
-Note that the dollar cost average strategy doesn't have a sell function, this is paired with the env variable 'ENABLE_SELL' having the value 'false'
+Note that the dollar cost average strategy doesn't have a sell function, this is paired with the env variable `ENABLE_SELL` having the value 'false'
 
 The buy and sell functions live inside the \<strategy> folder, they receive no arguments and as such should rely on environment variables for 'parameters'.
+
+### Existing Strategy Explanations
+
+- [BTCMarkets Chunk](https://github.com/scaredibis/flexible-crypto-trader/blob/master/btcmarkets/chunk/STRATEGY.md)
+- [BTCMarkets Dollar Cost Average](https://github.com/scaredibis/flexible-crypto-trader/blob/master/btcmarkets/dca/STRATEGY.md)
 
 ### Serverless stages
 
@@ -79,7 +87,7 @@ The existing environment variable names are tailored for the included chunk trad
 
 ## Example environments
 
-See exampleEnvs.yml for example environment variable configurations.
+See [exampleEnvs](https://github.com/scaredibis/flexible-crypto-trader/blob/master/exampleEnvs.yml) for example configurations.
 
 [Read This](http://www.goingserverless.com/blog/keeping-secrets-out-of-git)
 for a detailed explanations of environment variables per stage.
@@ -89,7 +97,7 @@ for a detailed explanations of environment variables per stage.
 - Disabled cloudwatch schedules (cron schedules) will appear to be enabled from the Lambda console.
 This is a [known issue](https://github.com/serverless/serverless/issues/5111).
 Running serverless package will build the cloudformation template without deploying to aws.
-You can verify that the http event(s) have status 'DISABLED' in the output of this command.
+You can verify that the http event(s) have status 'DISABLED' in the stack update template in the .serverless directory.
 
 ## License
 This project is [MIT licensed](https://github.com/scaredibis/flexible-crypto-trader/blob/master/LICENSE)

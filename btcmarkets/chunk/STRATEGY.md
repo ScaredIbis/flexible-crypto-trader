@@ -1,4 +1,4 @@
-## Chunk Strategy
+## BTCMarkets Chunk Strategy
 
 The chunk strategy runs parallel trading chunks that are bought and sold independently of eachother. ```AUD_PURCHASE_AMOUNT``` and ```MAX_AUD_IN_OPEN_TRADES``` determine how many of these chunks can be running at any give time.
 
@@ -12,9 +12,8 @@ The chunk strategy runs parallel trading chunks that are bought and sold indepen
         - This ensures the trader swiftly replenishes chunks when price rises sharply and chunks are being sold quickly.
 - If `AUD_PURCHASE_AMOUNT` exceeds `MAX_AUD_IN_OPEN_TRADES`
     - Abort buy process
-- Get the current best asking price from BTCMarkets for given `COIN`
 - If running in live mode (`LIVE` is set to 'true')
-    - Place market order to purchase `AUD_PURCHASE_AMOUNT` worth of `COIN` based on best ask price
+    - Place market order to purchase `AUD_PURCHASE_AMOUNT` worth of `COIN` based on current best ask price
 - Store chunk details in dynamoDB (as per `DB_TABLE_NAME`)
 
 ### Sell Process
