@@ -94,11 +94,15 @@ async function sell() {
 			await new Promise((resolve, reject) => {
 				db.update({
 					TableName: tableName,
-					Key: { id : trade.id },
-					UpdateExpression: 'set #sale = :sale',
-					ExpressionAttributeNames: {'#sale' : 'sale'},
+					Key: { id: trade.id },
+					UpdateExpression: 'set #sale = :sale, #soldAt = :soldAt ',
+					ExpressionAttributeNames: {
+						'#sale': 'sale',
+						'#soldAt': 'soldAt'
+					},
 					ExpressionAttributeValues: {
-						':sale' : sale
+						':sale': sale,
+						':soldAt': new Date().toISOString(),
 					}
 				}, (err, data) => {
 					if(err) {

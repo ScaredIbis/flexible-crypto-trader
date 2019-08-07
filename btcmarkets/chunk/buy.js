@@ -107,7 +107,8 @@ async function buy() {
 				amountSpentAUD: amountToSpendAUD,
 				amountPurchased: amountToBuy,
 				coinPrice: bestAsk,
-				sale: null
+				sale: null,
+				soldAt: null
 			}
 		}, (err, data) => {
 			if(err) {
